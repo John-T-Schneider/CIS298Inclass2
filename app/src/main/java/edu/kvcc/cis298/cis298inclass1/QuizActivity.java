@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
@@ -15,6 +16,24 @@ public class QuizActivity extends AppCompatActivity {
     //No value yet. Just declared the variable
     private Button mTrueButton;
     private Button mFalseButton;
+    //Variable for the next button
+    private Button mNextButton;
+    //Variable for the question string
+    private TextView mQuestionTextView;
+
+    //The questions that will be used. It is an array of type
+    //Question, that contains 5 Questions. It is a hard coded
+    //array. In most apps, you would want your data to come from
+    //somewhere else(database, internet). Not be hard coded
+    private Question[] mQuestionBank = new Question[]{
+            new Question(R.string.question_oceans, true),
+            new Question(R.string.question_mideast, false),
+            new Question(R.string.question_africa, false),
+            new Question(R.string.question_americas, true),
+            new Question(R.string.question_asia, true)
+    };
+
+    private int mCurrentIndex = 0;
 
     //I did not write this method, it was given to me by google.
     //It is the 'setup' method for the app
