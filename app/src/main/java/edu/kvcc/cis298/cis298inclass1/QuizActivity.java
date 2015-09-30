@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,8 +16,15 @@ public class QuizActivity extends AppCompatActivity {
     //Create a class level Widget variables so that we will
     //have access to stuff from the view.
     //No value yet. Just declared the variable
-    private Button mTrueButton;
-    private Button mFalseButton;
+    private RadioGroup mQuestionGroup;
+
+    private RadioButton mChoice1;
+    private RadioButton mChoice2;
+    private RadioButton mChoice3;
+    private RadioButton mChoice4;
+
+    private Button mSubmitButton;
+
     //Variable for the next button
     private Button mNextButton;
     //Variable for the question string
@@ -26,11 +35,15 @@ public class QuizActivity extends AppCompatActivity {
     //array. In most apps, you would want your data to come from
     //somewhere else(database, internet). Not be hard coded
     private Question[] mQuestionBank = new Question[]{
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true)
+
+            new Question(R.string.question_1_multiple,R.id.multiple_choice_3,
+                    new int[] {R.string.question_1_choice_1, R.string.question_1_choice_2,
+                            R.string.question_1_choice_3, R.string.question_1_choice_4}),
+
+
+            new Question(R.string.question_2_multiple, R.id.multiple_choice_2,
+                    new int[] {R.string.question_2_choice_1, R.string.question_2_choice_2,
+                            R.string.question_2_choice_3, R.string.question_2_choice_4})
     };
 
     private int mCurrentIndex = 0;
@@ -48,21 +61,32 @@ public class QuizActivity extends AppCompatActivity {
         //Assign the integer for the string resource to the
         //textview so that the question text will display.
         mQuestionTextView.setText(question);
+
+        //Fetch the question choice strings from the question object
+        int[] choices = mQuestionBank[mCurrentIndex].getChoiceResIds();
+
+        //Assign each question choice text to the text property of the radio button.
+
+
+        mChoice1.setText(choices[0]);
+        mChoice2.setText(choices[1]);
+        mChoice3.setText(choices[2]);
+        mChoice4.setText(choices[3]);
+
     }
 
-    private void checkAnswer (boolean userPressedTrue){
-        //Create a boolean to represent the actual answer of
+    private void checkAnswer (int selectedRadioButtonId){
+        //Create a integer to represent the actual answer of
         //the current question
-        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
+        int correctAnswer = mQuestionBank[mCurrentIndex].getCorrectAnswerResId();
 
         //declare an integer that will be a pointer to the string
         //resource that will be used for the toast message
         int messageResId = 0;
 
-        //Compare the actual answer to the answer that was passed
-        //into this method. If they match, the message is correct.
-        //else it is incorrect. Assign the R in value to the messageResId
-        if (userPressedTrue == answerIsTrue) {
+        //Does the radio button id of the answer they submitted match the radio button
+        // id of the correct answer. If so it is right, else it is wrong
+        if (selectedRadioButtonId == correctAnswer) {
             messageResId = R.string.correct_toast;
         } else {
             messageResId = R.string.incorrect_toast;
@@ -93,39 +117,28 @@ public class QuizActivity extends AppCompatActivity {
         //Get a 'handle' to the textview in the layout
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
+        mQuestionGroup = (RadioGroup) findViewById(R.id.multiple_group);
+
+        mChoice1 = (RadioButton) findViewById(R.id.multiple_choice_1);
+        mChoice2 = (RadioButton) findViewById(R.id.multiple_choice_2);
+        mChoice3 = (RadioButton) findViewById(R.id.multiple_choice_3);
+        mChoice4 = (RadioButton) findViewById(R.id.multiple_choice_4);
+
+        mSubmitButton = (Button) findViewById(R.id.submit_button);
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 //Query the radio button group to find out which radio button was selected.
+                 //Store the id of the selected one in the variable selectedAnswerId.
+                 int selectedAnswerId = mQuestionGroup.getCheckedRadioButtonId();
+
+                 //Pass the id of the selected radio button into the checkAnswer method.
+                 //The checkAnswer handles toasting whether it is correct or not.
+                 checkAnswer(selectedAnswerId);
+             }
+         });
 
 
-
-        //Fetch the widget control from the view, and then
-        //cast and assign it to the class variable we setup
-        mTrueButton = (Button) findViewById(R.id.true_button);
-
-        //Now that i have a 'handle' to the view widget, i can
-        //Setup an OnClickListener for the widget
-        //This OnClickListener uses an anonymous inner class.
-        //We are passing what we want to have happen OnClick.
-        mTrueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Call the checkAnswer method that is declared up top
-                //of the class. It will take in the bool value that they
-                //selected, and do the work of determining if it is correct.
-                //Either way it will Toast the message to the screen.
-                checkAnswer(true);
-            }
-        });
-
-        mFalseButton = (Button) findViewById(R.id.false_button);
-        mFalseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Call the checkAnswer method that is declared up top
-                //of the class. It will take in the bool value that they
-                //selected, and do the work of determining if it is correct.
-                //Either way it will Toast the message to the screen.
-                checkAnswer(false);
-            }
-        });
 
 
         mNextButton = (Button) findViewById(R.id.next_button);

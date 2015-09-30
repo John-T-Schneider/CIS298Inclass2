@@ -9,15 +9,27 @@ public class Question {
     //In order to get a string from strings.xml, we need
     //an integer as the reference value.
     private int mTextResId;
-    //bool value for whether the question is true or false
-    private boolean mAnswerTrue;
+    //integer to represent the integer id of the correct resource
+    private int mCorrectAnswerResId;
+    //integer array used to hold the resource ids of the choices for the question
+    private int[] mChoiceResIds;
 
-    //Constructor that accepts 2 parameters. The string id,
-    // and the bool answer
-    public Question(int textResId, boolean answerTrue){
+    //Constructor that accepts 3 parameters. The string id,
+    // and the int correct answer
+    public Question(int textResId, int correctAnswerResId, int[] choiceResIds){
         //Assign the passed in ones to the class level ones.
         mTextResId = textResId;
-        mAnswerTrue = answerTrue;
+        mCorrectAnswerResId = correctAnswerResId;
+        mChoiceResIds = choiceResIds;
+    }
+
+
+    public int[] getChoiceResIds() {
+        return mChoiceResIds;
+    }
+
+    public void setChoiceResIds(int[] choiceResIds) {
+        mChoiceResIds = choiceResIds;
     }
 
     // Getter/Setter gives access to the private variables
@@ -31,13 +43,12 @@ public class Question {
         mTextResId = textResId;
     }
 
-    //Getter for mAnswerTrue
-    public boolean isAnswerTrue() {
-        return mAnswerTrue;
+    //getters and setters for ALL
+    public int getCorrectAnswerResId() {
+        return mCorrectAnswerResId;
     }
 
-    //Setter for mAnswerTrue
-    public void setAnswerTrue(boolean answerTrue) {
-        mAnswerTrue = answerTrue;
+    public void setCorrectAnswerResId(int correctAnswerResId) {
+        mCorrectAnswerResId = correctAnswerResId;
     }
 }
